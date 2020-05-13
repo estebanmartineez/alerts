@@ -3,14 +3,14 @@ version: "3"
 services:
  node:
   build:
-   context: ..
+   context: ./backend
    dockerfile: docker/Dockerfile
   container_name: api
   command: npm run dev
   ports:
    - 3000:3000
   volumes:
-   - ../src:/app/src
+   - ./backend/src:/app/src
   networks:
    - api-network
  mysql:
