@@ -7,12 +7,30 @@ services:
    dockerfile: docker/Dockerfile
   container_name: api
   command: npm run dev
+  depends_on:
+    - mysql
   ports:
-   - 3000:3000
+   - 3001:3001
   volumes:
    - ./backend/src:/app/src
   networks:
    - api-network
+ react:
+   build:
+     context: ./frontend
+     dockerfile: docker/Dockerfile
+   container_name: frontend
+   command: npm start
+   stdin_open: true
+   ports:
+     - 3000:3000
+   volumes:
+     - ./frontend/src:/app/src
+     - ./frontend/public:/app/public
+   depends_on:
+    - node
+   networks:
+     - api-network
  mysql:
    image: mysql:5.7
    container_name: "mysql"
