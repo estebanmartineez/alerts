@@ -12,7 +12,7 @@ export class Alert {
     description: string;
 
     @CreateDateColumn({type: 'timestamp'})
-    createdAt: string;
+    createdAt: Date;
 
     @Column()
     server_type: string;

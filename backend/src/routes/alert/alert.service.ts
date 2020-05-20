@@ -1,12 +1,12 @@
-import { getRepository } from "typeorm"
+import {getRepository, Like} from "typeorm"
 import { Alert } from "../../entity/Alert"
-import { MAX_ITEMS_PER_PAGE } from "../../helpers/constansts";
+import {Request} from "express";
 
 export class AlertService {
 
-    static async getAlertData(page: number, limit: number): Promise<Alert[]> {
-        const offset = ((page - 1) * MAX_ITEMS_PER_PAGE)
-        return await getRepository(Alert).find({
+    static async getAlertData(page: number, limit: number): Promise<[Alert[], number]> {
+        const offset = (page * limit)
+        return await getRepository(Alert).findAndCount({
             skip: offset,
             take: limit
         });
@@ -15,5 +15,16 @@ export class AlertService {
     static async createNewAlert(alert: Alert): Promise<Alert> {
         const newAlert = getRepository(Alert).create(alert)
         return await getRepository(Alert).save(newAlert)
+    }
+
+    static async searchAlerts(request: Request):Promise<Alert[]> {
+        let query = request.query.search
+        return await getRepository(Alert).find({
+            where : [{
+                server : Like(`%${query}%`),
+            }, {
+                description : Like(`%${query}%`),
+            }]
+        });
     }
 }

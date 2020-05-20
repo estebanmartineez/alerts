@@ -8,13 +8,11 @@ import HttpStatus from 'http-status-codes/index'
 
 export const getAlerts = router.get('/', async (request: Request, response:Response): Promise<Response> => {
     const { page, limit } = getPageAndLimit(request);
-    const alertData = await AlertService.getAlertData(page, limit)
-
-    return response.status(HttpStatus.OK).json(alertData)
+    const [alertData, total]  = await AlertService.getAlertData(page, limit)
+    return response.status(HttpStatus.OK).json({alertData, total})
 });
 
 export const createAlert = router.post('/', async(request: Request, response: Response): Promise<Response> => {
-    console.log(request.body)
     if(isInvalidAlertRequest(request.body)) {
         return response.status(HttpStatus.BAD_REQUEST).json('Invalid Request')
     }
